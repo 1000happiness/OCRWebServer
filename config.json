@@ -1,0 +1,15 @@
+{
+    "web_server": {
+        "port": 8888
+    },
+    "ocr": {
+        "process": {
+            "number": 4,
+            "max_task_number": 10
+        }
+    },
+    "service": {
+        "time": 6000,
+        "img_number": 100 
+    }
+}
