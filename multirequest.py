@@ -1,9 +1,10 @@
+import numpy as np
 import requests
 import multiprocessing
 import os
 import random
 
-def random_img_filename():
+def random_img_filename(q):
     files= os.listdir("./imgs")
     body = {
         "file_type": "filename",
@@ -12,8 +13,9 @@ def random_img_filename():
     }
     res = requests.post("http://localhost:8888/ocr_service", data=body)
     print("random img filename", res.elapsed)
+    q.put(res.elapsed)
 
-def same_img_filename():
+def same_img_filename(q):
     files= os.listdir("./imgs")
     body = {
         "file_type": "filename",
@@ -22,8 +24,9 @@ def same_img_filename():
     }
     res = requests.post("http://localhost:8888/ocr_service", data=body)
     print("same img filename", res.elapsed)
+    q.put(res.elapsed)
 
-def random_img_file():
+def random_img_file(q):
     files= os.listdir("./imgs")
     body = {
         "file_type": "file",
@@ -32,9 +35,21 @@ def random_img_file():
     upload_files = {'file': open("./imgs/" + files[random.randint(0, len(files) - 1)], 'rb')}
     res = requests.post("http://localhost:8888/ocr_service", data=body, files=upload_files)
     print("random img file:", res.elapsed)
+    q.put(res.elapsed)
 
 if __name__ == "__main__":
-    for i in range(30):
-        multiprocessing.Process(target=random_img_filename, args=()).start()
-        multiprocessing.Process(target=random_img_file, args=()).start()
-        multiprocessing.Process(target=same_img_filename, args=()).start()
+    q = multiprocessing.Queue()
+    num = 50
+    for i in range(num):
+        # multiprocessing.Process(target=random_img_filename, args=(q,)).start()
+        # multiprocessing.Process(target=random_img_file, args=(q,)).start()
+        multiprocessing.Process(target=same_img_filename, args=(q,)).start()
+
+    i = 0
+    time = []
+    while True:
+        time.append(q.get())
+        i += 1
+        if(i == num):
+            break
+    print(np.array(time).mean(), np.array(time).max())

@@ -8,7 +8,10 @@
             "max_task_number": 20
         },
         "predict_system": {
-            "enable_mkldnn": true
+            "enable_mkldnn": true,
+            "det_model_dir": "./extension/OCR/model/ch_ppocr_mobile_v1.1_det_infer/",
+            "rec_model_dir": "./extension/OCR/model/ch_ppocr_mobile_v1.1_rec_infer/",
+            "cls_model_dir": "./extension/OCR/model/ch_ppocr_mobile_v1.1_cls_infer/"
         }
     },
     "service": {
