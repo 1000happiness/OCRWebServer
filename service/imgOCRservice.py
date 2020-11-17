@@ -3,6 +3,8 @@ import threading
 import copy
 import os
 import time
+import cv2
+import numpy as np
 # from tornado import gen
 
 class ImgStatus():
@@ -38,8 +40,7 @@ class ImgOCRService():
         try:
             mtime = os.path.getmtime(filename)
         except FileNotFoundError as e:
-            print(e.message)
-            return None
+            raise Exception("{} not exist".format(filename))
 
         self.ocr_result_lock.acquire()
         if filename in self.ocr_result_dict.keys():
@@ -79,6 +80,16 @@ class ImgOCRService():
     async def get_ocr_result_by_file(self, file):
         redo_flag = False
         filename = hash(file)
+        img = None
+        try:
+            img = np.frombuffer(file, dtype=np.uint8)
+            img = cv2.imdecode(img, 1)         
+        except Exception as e:
+            print("formdata can't be decoded as img")
+            raise e
+        finally:
+            if img is None:
+                raise Exception("formdata can't be decoded as img")
 
         self.ocr_result_lock.acquire()
         if filename in self.ocr_result_dict.keys():

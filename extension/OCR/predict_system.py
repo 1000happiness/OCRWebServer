@@ -115,9 +115,13 @@ class PredictSystem:
                     continue
             elif task["file_type"] == "file":
                 file = task["file"]
-                img = np.frombuffer(file, dtype=np.uint8)
-                img = cv2.imdecode(img, 1)
                 filename = task["filename"]
+                try:
+                    img = np.frombuffer(file, dtype=np.uint8)
+                    img = cv2.imdecode(img, 1)
+                except Exception as e:
+                    print("formdata can't be decode as img")
+                    continue
 
             ocr_result = self.predict_a_img(img, text_sys)
 

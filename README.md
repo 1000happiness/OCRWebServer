@@ -1,4 +1,4 @@
-# 基于飞桨OCR的支持并发访问的OCR服务器
+# 支持并发访问的OCR服务器
 
 ## 项目说明
 
@@ -86,10 +86,10 @@ body = {
 upload_files = {'file': open("./imgs/" + files[random.randint(0, len(files) - 1)], 'rb')}
 res = requests.post("http://ip:port/ocr_service", data=body, files=upload_files)
 ```
-* 请求体
+* 请求体说明
 ```
 body = {
-    "file_type": "filename", //@str 两个值filename或file，如果为file需要在在请求中加入formdata格式的文件
+    "file_type": "filename", //@str 只能取两个值：filename或file，如果为file需要在在请求中加入formdata格式的文件（详见请求示例）
     "filename": "./imgs/" + files[random.randint(0, len(files) - 1)], //@str 当file_type为filename时，需要给出服务端能够访问到的文件路径
     "block_flag": True //@bool 为True时请求会阻塞到完成识别，为False时服务端会开始识别，但请求直接返回
 }
