@@ -5,7 +5,10 @@
     "ocr": {
         "process": {
             "number": 4,
-            "max_task_number": 10
+            "max_task_number": 20
+        },
+        "predict_system": {
+            "enable_mkldnn": true
         }
     },
     "service": {
