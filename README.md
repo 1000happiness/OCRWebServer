@@ -11,13 +11,14 @@
 ## 快速启动
 * 安装环境
 ```
-#conda
-conda env create -f requirement.yaml
-
 #pip
 pip install -r requirement.txt
 
 #在windows下，直接安装的sharply库缺少链接库，需要手动安装，可访问链接 https://www.lfd.uci.edu/~gohlke/pythonlibs/#lxml 自行下载安装
+
+#使用pip直接安装paddlepaddle的速度较慢，建议使用下面指令进行下载和安装 python3 -m pip install paddlepaddle==2.0.0b0 -i https://mirror.baidu.com/pypi/simple
+
+#如果需要使用加速，请注意mkldnn库的安装
 ```
 * 下载模型
 
