@@ -22,7 +22,7 @@ def same_img_filename(q):
         "filename": "./imgs/" + files[0],
         "block_flag": True
     }
-    res = requests.post("http://localhost:8888/ocr_service", data=body)
+    res = requests.post("http://192.168.177.0:8888/ocr_service", data=body)
     print("same img filename", res.elapsed)
     q.put(res.elapsed)
 
