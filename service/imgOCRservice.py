@@ -152,7 +152,7 @@ class ImgOCRService():
 
     def start_result_receive_loop(self):
         self.receive_loop_flag = True
-        th = threading.Thread(target=self.result_receive_loop)
+        th = threading.Thread(target=self.result_receive_loop, daemon=True)
         th.start()
 
     def stop_result_receive_loop(self):
