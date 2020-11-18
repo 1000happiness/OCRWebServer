@@ -19,10 +19,4 @@ if __name__ == '__main__':
     img_ocr_service.start_result_receive_loop()
     ocr_manager.start_process_management()
     print("Web server in port {0} start".format(configuration["web_server"]["port"]))
-    web_server.start_noblock()
-    while True: 
-        command = input()
-        if command == "stop":
-            web_server.stop()
-            img_ocr_service.stop_result_receive_loop()
-            ocr_manager.stop_process_management()
+    web_server.start_block()
