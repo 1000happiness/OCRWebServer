@@ -12,7 +12,7 @@
 * 安装环境
 ```
 #pip
-pip install -r requirement.txt
+pip install -r requirements.txt
 
 #在windows下，直接安装的sharply库缺少链接库，需要手动安装，可访问链接 https://www.lfd.uci.edu/~gohlke/pythonlibs/#lxml 自行下载安装
 
