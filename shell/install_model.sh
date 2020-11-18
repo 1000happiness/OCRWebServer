@@ -8,7 +8,3 @@ wget https://paddleocr.bj.bcebos.com/20-09-22/cls/ch_ppocr_mobile_v1.1_cls_infer
 tar -xf ch_ppocr_mobile_v1.1_cls_infer.tar
 wget https://paddleocr.bj.bcebos.com/20-09-22/mobile/rec/ch_ppocr_mobile_v1.1_rec_infer.tar
 tar -xf ch_ppocr_mobile_v1.1_rec_infer.tar
-cd model
-rm *.tar
-cd ..
-mv model ../extension/OCR/model
