@@ -11,7 +11,7 @@ def random_img_filename(q):
         "filename": "./imgs/" + files[random.randint(0, len(files) - 1)],
         "block_flag": True
     }
-    res = requests.post("http://localhost:8888/ocr_service", data=body)
+    res = requests.post("http://59.78.27.196:10001/ocr_service", data=body)
     print("random img filename", res.elapsed)
     q.put(res.elapsed)
 
@@ -33,7 +33,7 @@ def random_img_file(q):
         "block_flag": True
     }
     upload_files = {'file': open("./imgs/" + files[random.randint(0, len(files) - 1)], 'rb')}
-    res = requests.post("http://localhost:8888/ocr_service", data=body, files=upload_files)
+    res = requests.post("http://59.78.27.196:10001/ocr_service", data=body, files=upload_files)
     print("random img file:", res.elapsed)
     q.put(res.elapsed)
 
@@ -42,8 +42,8 @@ if __name__ == "__main__":
     num = 50
     for i in range(num):
         # multiprocessing.Process(target=random_img_filename, args=(q,)).start()
-        # multiprocessing.Process(target=random_img_file, args=(q,)).start()
-        multiprocessing.Process(target=same_img_filename, args=(q,)).start()
+        multiprocessing.Process(target=random_img_file, args=(q,)).start()
+        # multiprocessing.Process(target=same_img_filename, args=(q,)).start()
 
     i = 0
     time = []
