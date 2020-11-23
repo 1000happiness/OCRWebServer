@@ -5,7 +5,7 @@ import os
 import random
 import json
 
-ip = "localhost"
+ip = "59.78.27.196"
 configuration = {}
 with open("config.json") as f:
     configuration = json.load(f)
