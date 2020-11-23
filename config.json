@@ -1,11 +1,11 @@
 {
     "web_server": {
-        "port": 8888
+        "port": 8889
     },
     "ocr": {
         "process": {
-            "number": 4,
-            "max_task_number": 20
+            "number": 3,
+            "max_task_number": 7
         },
         "predict_system": {
             "enable_mkldnn": true,

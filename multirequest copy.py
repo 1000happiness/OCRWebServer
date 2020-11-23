@@ -3,6 +3,14 @@ import requests
 import multiprocessing
 import os
 import random
+import json
+
+ip = "localhost"
+configuration = {}
+with open("config.json") as f:
+    configuration = json.load(f)
+port = configuration["web_server"]["port"]
+url = "http://{}:{}/ocr_service".format(ip, port)
 
 def random_img_filename(q):
     files= os.listdir("./imgs")
@@ -11,7 +19,7 @@ def random_img_filename(q):
         "filename": "./imgs/" + files[random.randint(0, len(files) - 1)],
         "block_flag": True
     }
-    res = requests.post("http://59.78.27.196:10001/ocr_service", data=body)
+    res = requests.post(url, data=body)
     print("random img filename", res.elapsed)
     q.put(res.elapsed)
 
@@ -22,7 +30,7 @@ def same_img_filename(q):
         "filename": "./imgs/" + files[0],
         "block_flag": True
     }
-    res = requests.post("http://192.168.177.0:8888/ocr_service", data=body)
+    res = requests.post(url, data=body)
     print("same img filename", res.elapsed)
     q.put(res.elapsed)
 
@@ -33,17 +41,17 @@ def random_img_file(q):
         "block_flag": True
     }
     upload_files = {'file': open("./imgs/" + files[random.randint(0, len(files) - 1)], 'rb')}
-    res = requests.post("http://59.78.27.196:10001/ocr_service", data=body, files=upload_files)
+    res = requests.post(url, data=body, files=upload_files)
     print("random img file:", res.elapsed)
     q.put(res.elapsed)
 
 if __name__ == "__main__":
     q = multiprocessing.Queue()
-    num = 50
+    num = 1
     for i in range(num):
         # multiprocessing.Process(target=random_img_filename, args=(q,)).start()
-        multiprocessing.Process(target=random_img_file, args=(q,)).start()
-        # multiprocessing.Process(target=same_img_filename, args=(q,)).start()
+        # multiprocessing.Process(target=random_img_file, args=(q,)).start()
+        multiprocessing.Process(target=same_img_filename, args=(q,)).start()
 
     i = 0
     time = []
