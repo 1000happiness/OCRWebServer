@@ -48,7 +48,7 @@ def random_img_file(q):
 
 def random_img_base64(q):
     files= os.listdir("./imgs")
-    with open("./imgs/" + files[random.randint(0, len(files) - 1)],"rb") as f: 
+    with open("./imgs/" + "invoice3.png","rb") as f: 
         base64_data = base64.b64encode(f.read())  
     
     img_src = "data:image/png;base64," + base64_data.decode()
