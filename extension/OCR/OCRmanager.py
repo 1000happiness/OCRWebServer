@@ -18,7 +18,7 @@ class OCRManager:
 
         for i in range(process_num):
             predict_system = PredictSystem(self.predict_system_configuration, task_q, result_q, self.status_q, self.max_task_number)
-            self.processes.append(multiprocessing.Process(target=predict_system.start_predict_loop))
+            self.processes.append(multiprocessing.Process(target=predict_system.start_predict_loop, daemon=True))
 
     def start_all_process(self):
         for process in self.processes:
@@ -27,7 +27,7 @@ class OCRManager:
     def start_process_management(self):
         self.manage_loop_flag = True
         self.start_all_process()
-        th = threading.Thread(target=self.process_management_loop)
+        th = threading.Thread(target=self.process_management_loop, daemon=True)
         th.start()
 
     def stop_process_management(self):
@@ -38,7 +38,7 @@ class OCRManager:
             status = self.status_q.get()
             if status == "end":
                 predict_system = PredictSystem(self.predict_system_configuration, self.task_q, self.result_q, self.status_q, self.max_task_number)
-                process = multiprocessing.Process(target=predict_system.start_predict_loop)
+                process = multiprocessing.Process(target=predict_system.start_predict_loop, daemon=True)
                 process.start()
 
 

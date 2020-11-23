@@ -1,3 +1,4 @@
+import base64
 import multiprocessing
 import threading
 import copy
@@ -121,6 +122,51 @@ class ImgOCRService():
             self.ocr_result_lock.release()
             return None
 
+    async def get_ocr_result_by_base64(self, src):
+        redo_flag = False
+        img = None
+        try:
+            b64_img = base64.b64decode(src.split(',')[1].encode())
+            filename = hash(b64_img)
+            img = np.frombuffer(b64_img, dtype=np.uint8)
+            img = cv2.imdecode(img, 1)         
+        except Exception as e:
+            print("formdata can't be decoded as img")
+            raise e
+        finally:
+            if img is None:
+                raise Exception("formdata can't be decoded as img")
+
+        self.ocr_result_lock.acquire()
+        if filename in self.ocr_result_dict.keys():
+            result = self.ocr_result_dict[filename]
+            #检验图片是否正在被处理
+            if result["status"] != ImgStatus.FINISHED:
+                self.ocr_result_lock.release()
+                return None
+        else:
+            redo_flag = True
+
+        if(not redo_flag):
+            ocr_result = copy.deepcopy(self.ocr_result_dict[filename]["ocr_result"])
+            self.ocr_result_lock.release()
+            return ocr_result
+        else:
+            #将需要处理的图片加入task queue
+            self.ocr_result_dict[filename] = {
+                "mtime": time.time(),
+                "timestamp": time.time(),
+                "ocr_result": [],
+                "status": ImgStatus.PROCESSING
+            }
+            self.img_task_q.put({
+                "filename": filename,
+                "file": b64_img,
+                "file_type": "file"
+            })
+            self.ocr_result_lock.release()
+            return None
+
     def add_result(self, result):
         self.ocr_result_lock.acquire()
         filename = result["filename"]
@@ -152,7 +198,7 @@ class ImgOCRService():
 
     def start_result_receive_loop(self):
         self.receive_loop_flag = True
-        th = threading.Thread(target=self.result_receive_loop)
+        th = threading.Thread(target=self.result_receive_loop, daemon=True)
         th.start()
 
     def stop_result_receive_loop(self):
