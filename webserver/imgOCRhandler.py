@@ -8,13 +8,21 @@ class ImgOCRHandler(web.RequestHandler):
         self.img_ocr_service = img_ocr_service
 
     async def post(self):
-        file_type = self.get_body_argument("file_type")
-        block_flag = self.get_body_argument("block_flag")
-        if block_flag != "True" and block_flag != "False":
+        data = json.loads(self.request.body)
+        file_type = None
+        block_flag = None
+        try:
+            file_type = data["file_type"]
+            block_flag = data["block_flag"]
+        except Exception as e:
             self.send_error(400)
-            return
+
         if file_type == "filename":
-            filename = self.get_body_argument("filename")
+            filename = None
+            try:
+                filename = data["filename"]
+            except Exception as e:
+                self.send_error(400)
 
             result = None
             while True:
@@ -24,7 +32,7 @@ class ImgOCRHandler(web.RequestHandler):
                     self.send_error(500, message=str(e))
                     return
 
-                if(result == None and block_flag == "True"):
+                if(result == None and block_flag):
                     await gen.sleep(0.5)
                     continue
                 else:
@@ -48,7 +56,28 @@ class ImgOCRHandler(web.RequestHandler):
                     self.send_error(500, message=str(e))
                     return
 
-                if(result == None and block_flag == "True"):
+                if(result == None and block_flag):
+                    await gen.sleep(0.5)
+                    continue
+                else:
+                    break         
+
+            self.write(json.dumps(result, ensure_ascii=False))
+        elif file_type == "base64":
+            src = None
+            try:
+                src = data["img_src"]
+            except Exception as e:
+                self.send_error(400)
+
+            result = None
+            while True:
+                try:
+                    result = await self.img_ocr_service.get_ocr_result_by_base64(src)
+                except Exception as e:
+                    self.send_error(500, message=str(e))
+                    return
+                if(result == None and block_flag):
                     await gen.sleep(0.5)
                     continue
                 else:
@@ -60,4 +89,7 @@ class ImgOCRHandler(web.RequestHandler):
             return
 
     def write_error(self, status_code, **kwargs):
-        self.write("status: {0}; reason: {1}".format(status_code, kwargs["message"]))
+        if("message" in kwargs):
+            self.write("status: {0}; reason: {1}".format(status_code, kwargs["message"]))
+        else:
+            self.write("status: {0}".format(status_code))
