@@ -7,6 +7,11 @@ class ImgOCRHandler(web.RequestHandler):
     def initialize(self, img_ocr_service):
         self.img_ocr_service = img_ocr_service
 
+    def set_default_headers(self):
+        self.set_header('Access-Control-Allow-Origin', '*') 
+        self.set_header('Access-Control-Allow-Headers', 'x-requested-with')
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, PUT, DELETE')
+
     async def post(self):
         data = json.loads(self.request.body)
         file_type = None

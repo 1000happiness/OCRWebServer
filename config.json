@@ -1,6 +1,6 @@
 {
     "web_server": {
-        "port": 25565
+        "port": 10000
     },
     "ocr": {
         "process": {

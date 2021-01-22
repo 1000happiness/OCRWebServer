@@ -6,7 +6,7 @@ import os
 import random
 import json
 
-ip = "59.78.27.196"
+ip = "127.0.0.1"
 configuration = {}
 with open("config.json") as f:
     configuration = json.load(f)
@@ -47,8 +47,7 @@ def random_img_file(q):
     q.put(res.elapsed)
 
 def random_img_base64(q):
-    files= os.listdir("./imgs")
-    with open("./imgs/" + "invoice3.png","rb") as f: 
+    with open("./imgs/" + "canvas.png","rb") as f: 
         base64_data = base64.b64encode(f.read())  
     
     img_src = "data:image/png;base64," + base64_data.decode()
